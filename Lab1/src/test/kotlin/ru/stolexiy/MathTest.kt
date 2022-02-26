@@ -1,16 +1,14 @@
 package ru.stolexiy
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
-import org.junit.jupiter.params.provider.CsvSource
 import kotlin.math.PI
 import kotlin.test.assertEquals
 
 private const val absoluteTolerance = 1e-7
 
-internal class FunctionsTests {
+internal class MathTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = ["/sec-tests.csv"], delimiter = ';')
@@ -19,7 +17,7 @@ internal class FunctionsTests {
     }
 
     @Test
-    fun `sec(x) periodic`() {
+    fun `sec(x) periodic test`() {
         val x = 1.1
         val result = sec(x)
         val period = 2 * PI
@@ -28,7 +26,7 @@ internal class FunctionsTests {
     }
 
     @Test
-    fun `sec(x) parity`() {
+    fun `sec(x) parity test`() {
         val x = 0.5
         assertEquals(sec(x), sec(-x), absoluteTolerance)
     }
