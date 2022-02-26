@@ -1,30 +1,26 @@
 package ru.stolexiy
 
-import java.math.BigDecimal
-import java.math.BigInteger
-import kotlin.math.cos
+import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.pow
 
-private fun factorial(x: Int): BigInteger =
-    (1..x).fold(BigInteger.valueOf(1L)) { acc, i -> acc * BigInteger.valueOf(i.toLong()) }
-
-fun cos(x: Number): Double {
-    val cosX: Double = x.toDouble().let { x ->
-        generateSequence(0) { it + 1 }
-            .take(800)
-            .map { k ->
-                println("${k}) " + BigDecimal.valueOf((-1.0).pow(k)) * BigDecimal.valueOf(x).pow(2 * k) / factorial(2 * k).toBigDecimal())
-                println("fact(${2 * k}) = ${factorial(2 * k)}")
-                println("x.pow(${2 * k}) = ${x.pow(2 * k)}")
-                println("-1.pow(${k}) = ${(-1.0).pow(k)}")
-                BigDecimal.valueOf((-1.0).pow(k)) * BigDecimal.valueOf(x).pow(2 * k) / factorial(2 * k).toBigDecimal()
-            }
-            .sumOf { it }
-            .toDouble()
+fun cos(_x: Number): Double {
+    var x: Double = _x.toDouble()
+    if (abs(x) > PI) {
+        var mult = (x / PI).toInt()
+        mult += mult % 2
+        x -= PI * mult
     }
-    println("cos(${x}) = $cosX")
-    return cosX
+    return generateSequence(0) { it + 1 }
+            .take(10)
+            .map { k ->
+                (-1.0).pow(k) * x.pow(2 * k) / factorial(2 * k)
+            }
+            .sum()
 }
 
 fun sec(x: Number) = 1 / cos(x)
+
+private fun factorial(x: Int): Long =
+    (1..x).fold(1L) { acc, i -> acc * i.toLong() }
 
