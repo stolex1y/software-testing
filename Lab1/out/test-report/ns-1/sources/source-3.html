@@ -1,0 +1,209 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BinarySearchTree</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">ru.stolexiy</a>
+</div>
+
+<h1>Coverage Summary for Class: BinarySearchTree (ru.stolexiy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BinarySearchTree</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98,3%
+  </span>
+  <span class="absValue">
+    (57/58)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package ru.stolexiy
+<i class="no-highlight">2</i>&nbsp;
+<b class="fc"><i class="no-highlight">3</i>&nbsp;class BinarySearchTree(</b>
+<i class="no-highlight">4</i>&nbsp;    _value: Int,
+<i class="no-highlight">5</i>&nbsp;    _left: BinarySearchTree? = null,
+<i class="no-highlight">6</i>&nbsp;    _right: BinarySearchTree? = null,
+<i class="no-highlight">7</i>&nbsp;    _parent: BinarySearchTree? = null
+<i class="no-highlight">8</i>&nbsp;) {
+<b class="fc"><i class="no-highlight">9</i>&nbsp;    var value: Int = _value</b>
+<i class="no-highlight">10</i>&nbsp;        private set
+<b class="fc"><i class="no-highlight">11</i>&nbsp;    var left: BinarySearchTree? = _left</b>
+<i class="no-highlight">12</i>&nbsp;        private set
+<b class="fc"><i class="no-highlight">13</i>&nbsp;    var right: BinarySearchTree? = _right</b>
+<i class="no-highlight">14</i>&nbsp;        private set
+<b class="fc"><i class="no-highlight">15</i>&nbsp;    var parent: BinarySearchTree? = _parent</b>
+<i class="no-highlight">16</i>&nbsp;        private set
+<i class="no-highlight">17</i>&nbsp;
+<b class="fc"><i class="no-highlight">18</i>&nbsp;    fun inorderTraversal() = inorderTraversal(this)</b>
+<b class="fc"><i class="no-highlight">19</i>&nbsp;    fun search(value: Int) = search(this, value)</b>
+<b class="fc"><i class="no-highlight">20</i>&nbsp;    fun minimum() = minimum(this)</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;    fun maximum() = maximum(this)</b>
+<b class="fc"><i class="no-highlight">22</i>&nbsp;    fun insert(adding: BinarySearchTree) = insert(this, adding)</b>
+<i class="no-highlight">23</i>&nbsp;
+<b class="fc"><i class="no-highlight">24</i>&nbsp;    fun delete(value: Int) = delete(this, value)</b>
+<i class="no-highlight">25</i>&nbsp;
+<i class="no-highlight">26</i>&nbsp;    private fun delete(_root: BinarySearchTree?, value: Int): BinarySearchTree? {
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        var root = _root</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        if (root == null)</b>
+<b class="nc"><i class="no-highlight">29</i>&nbsp;            return null</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;        if (value &lt; root.value)</b>
+<b class="fc"><i class="no-highlight">31</i>&nbsp;            root.left = delete(root.left, value)</b>
+<b class="fc"><i class="no-highlight">32</i>&nbsp;        else if (value &gt; root.value)</b>
+<b class="fc"><i class="no-highlight">33</i>&nbsp;            root.right = delete(root.right, value)</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        else if (root.left != null &amp;&amp; root.right != null) {</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;            root.value = minimum(root.right!!).value</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;            root.right = delete(root.right, root.value)</b>
+<i class="no-highlight">37</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">38</i>&nbsp;            root =</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;                if (root.left != null)</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;                    root.left</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;                else if (root.right != null)</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;                    root.right</b>
+<i class="no-highlight">43</i>&nbsp;                else
+<b class="fc"><i class="no-highlight">44</i>&nbsp;                    null</b>
+<i class="no-highlight">45</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        return root</b>
+<i class="no-highlight">47</i>&nbsp;    }
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;    private fun insert(_tree: BinarySearchTree, adding: BinarySearchTree) {
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        var tree: BinarySearchTree = _tree</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        while (true) {</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;            if (adding.value &gt;= tree.value) {</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;                if (tree.right != null)</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;                    tree = tree.right!!</b>
+<i class="no-highlight">55</i>&nbsp;                else {
+<b class="fc"><i class="no-highlight">56</i>&nbsp;                    adding.parent = tree</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;                    tree.right = adding</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;                    break</b>
+<i class="no-highlight">59</i>&nbsp;                }
+<i class="no-highlight">60</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">61</i>&nbsp;                if (tree.left != null)</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;                    tree = tree.left!!</b>
+<i class="no-highlight">63</i>&nbsp;                else {
+<b class="fc"><i class="no-highlight">64</i>&nbsp;                    adding.parent = tree</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;                    tree.left = adding</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;                    break</b>
+<i class="no-highlight">67</i>&nbsp;                }
+<i class="no-highlight">68</i>&nbsp;            }
+<i class="no-highlight">69</i>&nbsp;        }
+<i class="no-highlight">70</i>&nbsp;    }
+<i class="no-highlight">71</i>&nbsp;
+<i class="no-highlight">72</i>&nbsp;    private fun maximum(tree: BinarySearchTree): BinarySearchTree {
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        return if (tree.right == null)</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;            tree</b>
+<i class="no-highlight">75</i>&nbsp;        else
+<b class="fc"><i class="no-highlight">76</i>&nbsp;            maximum(tree.right!!)</b>
+<i class="no-highlight">77</i>&nbsp;    }
+<i class="no-highlight">78</i>&nbsp;
+<i class="no-highlight">79</i>&nbsp;    private fun minimum(tree: BinarySearchTree): BinarySearchTree {
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        return if (tree.left == null)</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;            tree</b>
+<i class="no-highlight">82</i>&nbsp;        else
+<b class="fc"><i class="no-highlight">83</i>&nbsp;            minimum(tree.left!!)</b>
+<i class="no-highlight">84</i>&nbsp;    }
+<i class="no-highlight">85</i>&nbsp;
+<i class="no-highlight">86</i>&nbsp;    private fun inorderTraversal(tree: BinarySearchTree?): List&lt;Int&gt; {
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        val result = mutableListOf&lt;Int&gt;()</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;        if (tree != null) {</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;            result.addAll(inorderTraversal(tree.left))</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;            result.add(tree.value)</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;            result.addAll(inorderTraversal(tree.right))</b>
+<i class="no-highlight">92</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        return result</b>
+<i class="no-highlight">94</i>&nbsp;    }
+<i class="no-highlight">95</i>&nbsp;
+<i class="no-highlight">96</i>&nbsp;    private fun search(tree: BinarySearchTree?, value: Int): BinarySearchTree? {
+<b class="fc"><i class="no-highlight">97</i>&nbsp;        if (tree == null || value == tree.value)</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;            return tree</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        return if (value &lt; tree.value)</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;            search(tree.left, value)</b>
+<i class="no-highlight">101</i>&nbsp;        else
+<b class="fc"><i class="no-highlight">102</i>&nbsp;            search(tree.right, value)</b>
+<i class="no-highlight">103</i>&nbsp;    }
+<i class="no-highlight">104</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-28 04:22</div>
+</div>
+</body>
+</html>
