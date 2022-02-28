@@ -69,4 +69,4 @@
 а также тестовое покрытие ([DomainModelTest.kt](src/test/kotlin/ru/stolexiy/DomainModelTest.kt)).
 
 ***
-[Итоговое тестовое покрытие](out/test-report/index.html)
+[Итоговое тестовое покрытие](out/test-report.zip)
