@@ -1,8 +1,9 @@
 # Intellij
-.idea/
+**/.idea/
 *.iml
 *.iws
 
 # Build and gradle
-build/
-.gradle/
+**/build/
+**/.gradle/
+**/out/test*/
