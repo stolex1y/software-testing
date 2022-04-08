@@ -24,3 +24,6 @@ fun sec(x: Number) = 1 / cos(x)
 private fun factorial(x: Int): Long =
     (1..x).fold(1L) { acc, i -> acc * i.toLong() }
 
+fun main() {
+    println(1/Math.cos(1.5))
+}
