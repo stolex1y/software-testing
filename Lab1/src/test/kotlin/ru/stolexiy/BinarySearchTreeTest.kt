@@ -1,9 +1,13 @@
 package ru.stolexiy
 
-import org.junit.jupiter.api.BeforeAll
+import org.hamcrest.CoreMatchers.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ArgumentsSource
+import org.junit.jupiter.params.provider.ValueSource
 import java.util.Collections.max
 import java.util.Collections.min
 import kotlin.test.assertContentEquals
@@ -23,11 +27,40 @@ internal class BinarySearchTreeTest {
         }
     }
 
-    @Test
-    fun `add node to tree test`() {
-        val addValue = 15
+    @ParameterizedTest
+    @ValueSource(ints = [-1, 0, 2, 15])
+    fun `add node to tree test`(addValue: Int) {
+        assertNull(tree.search(addValue))
         tree.insert(BinarySearchTree(addValue))
         assertNotNull(tree.search(addValue))
+    }
+
+    @Test
+    fun `add node sequence to tree test`() {
+        val nodeList = listOf(1, 2, 3, -1)
+        val hasItemFromNodeList = nodeList.map { hasItem(it) }
+
+        assertThat(tree.inorderTraversal(), not(allOf(hasItemFromNodeList)))
+
+        nodeList.map {
+            BinarySearchTree(it)
+        } .forEach(tree::insert)
+
+        assertThat(tree.inorderTraversal(), allOf(hasItemFromNodeList))
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [-1, 0, 2, 5, 11])
+    fun `add multiple identical nodes test`(addValue: Int) {
+        val identicalNodes = generateSequence { addValue }.take(3).toList()
+        val hasIdenticalNodes = identicalNodes.map { hasItem(it) }
+        assertThat(tree.inorderTraversal(), not(allOf(hasIdenticalNodes)))
+
+        identicalNodes.map {
+            BinarySearchTree(it)
+        } .forEach(tree::insert)
+
+        assertThat(tree.inorderTraversal(), allOf(hasIdenticalNodes))
     }
 
     @Test
@@ -39,10 +72,31 @@ internal class BinarySearchTreeTest {
     }
 
     @Test
-    fun `tree traversal test`() {
+    fun `random ordered tree traversal test`() {
         val treeValuesSorted = treeValues.sorted()
         val traversaledTree = tree.inorderTraversal()
         assertContentEquals(treeValuesSorted, traversaledTree)
+    }
+
+    @Test
+    fun `sorted tree traversal test`() {
+        val treeValues = listOf(1, 2, 3, 4)
+        val tree = BinarySearchTree(treeValues[0])
+        treeValues.stream().skip(1).forEach {
+            tree.insert(BinarySearchTree(it))
+        }
+        assertContentEquals(treeValues, tree.inorderTraversal())
+    }
+
+    @Test
+    fun `reverse sorted tree traversal test`() {
+        val treeValues = listOf(4, 3, 2, 1)
+        val tree = BinarySearchTree(treeValues[0])
+        treeValues.stream().skip(1).forEach {
+            tree.insert(BinarySearchTree(it))
+        }
+        assertContentEquals(treeValues.sorted(), tree.inorderTraversal())
+
     }
 
     @Test

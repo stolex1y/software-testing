@@ -3,6 +3,7 @@ package ru.stolexiy
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.tan
 
 fun cos(_x: Number): Double {
     var x: Double = _x.toDouble()
@@ -24,6 +25,3 @@ fun sec(x: Number) = 1 / cos(x)
 private fun factorial(x: Int): Long =
     (1..x).fold(1L) { acc, i -> acc * i.toLong() }
 
-fun main() {
-    println(1/Math.cos(1.5))
-}

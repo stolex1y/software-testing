@@ -16,7 +16,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("org.hamcrest:hamcrest-all")
+    testImplementation("org.hamcrest:hamcrest-all:1.3")
 }
 
 tasks.test {
