@@ -35,7 +35,7 @@ abstract class Creature(
         if (isDead()) {
             return
         }
-        health -= damage
+        health = 0.coerceAtLeast(health - damage)
         println("$name получил урон $damage. Его здоровье $health")
         if (isDead())
             fallDown()
@@ -73,7 +73,7 @@ class Pistol : Weapon(randomDamage()) {
 
 class KillOZap : Weapon(randomDamage()) {
     companion object {
-        private fun randomDamage() = (random() * 10 + 10).roundToInt()
+        private fun randomDamage() = (random() * 10 + 5).roundToInt()
     }
 
     override fun shoot(target: Creature) {
@@ -85,6 +85,7 @@ class KillOZap : Weapon(randomDamage()) {
 class Battle {
     private val aliens = mutableListOf<Alien>()
     private val humans = mutableListOf<Human>()
+    var timeout = 1000L
 
     fun addToAliens(a: Alien) = aliens.add(a)
     fun addToHumans(h: Human) = humans.add(h)
@@ -96,15 +97,15 @@ class Battle {
         while (aliensSize() > 0 && humansSize() > 0) {
             val alien: Alien = getRandomCreature(aliens)
             val human: Human = getRandomCreature(humans)
-            Thread.sleep(1000)
+            Thread.sleep(timeout)
             if (random() >= 0.5) {
                 alien.shoot(human)
-                Thread.sleep(1000)
+                Thread.sleep(timeout)
                 if (human.isAlive())
                     human.shoot(alien)
             } else {
                 human.shoot(alien)
-                Thread.sleep(1000)
+                Thread.sleep(timeout)
                 if (alien.isAlive())
                     alien.shoot(human)
             }
