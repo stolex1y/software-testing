@@ -8,11 +8,24 @@ import kotlin.math.abs
 import kotlin.test.assertEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*;
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.provider.ValueSource
+import org.mockito.Mockito
+import org.mockito.kotlin.mock
+import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.doAnswer
 import java.lang.Double.NaN
 
-private const val absoluteTolerance = 1e-7
-
+@ExtendWith(MockitoExtension::class)
 internal class MathTest {
+
+    private fun sec(x: Number) = SecFun().calc(x)
+
+    private val baseFunMock: CosFun = mock {
+        on { calc(Mockito.anyInt()) } doAnswer { invocation ->
+            Math.cos(invocation.getArgument(0))
+        }
+    }
 
     @ParameterizedTest
     @CsvFileSource(resources = ["/sec-tests.csv"], delimiter = ';')
@@ -52,4 +65,27 @@ internal class MathTest {
     }
 
 
+    @Test
+    fun `simple tan test`() {
+        val expected = abs(Math.tan(PI / 3))
+        val actual = abs(TanFun().calc(PI / 3))
+        assertEquals(expected, actual, absoluteTolerance)
+    }
+
+    /*@ParameterizedTest
+    @ValueSource(classes = [SinFun::class, TanFun::class])
+    fun <T: TrigonometricFun> `simple sin test`(testFunClass: Class<T>) {
+        val testFun = testFunClass.constructors[1].newInstance(baseFun) as SingleArgMathFun
+        val expected = abs(Math.sin(PI / 3))
+        val actual = abs(testFun.calc(PI / 3))
+        assertEquals(expected, actual, absoluteTolerance)
+    }*/
+
+    @ParameterizedTest
+    @ValueSource(doubles = [1.0, 2.3, PI / 2])
+    fun `simple sin test`(x: Number) {
+        val expected = abs(Math.sin(x.toDouble()))
+        val actual = abs(SinFun(baseFunMock).calc(x))
+        assertEquals(expected, actual, absoluteTolerance)
+    }
 }
