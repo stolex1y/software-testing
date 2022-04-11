@@ -35,7 +35,7 @@ class CsvWriter(
         PrintWriter(file).use {
             it.write(generateSequence(start) { it + delta }.takeWhile { it <= end }
                 .map {
-                    "${it};${func.calc(it)}"
+                    "${String.format("%.3f", it)};${String.format("%.7f", func.calc(it))}"
                 }
                 .joinToString("\n")
             )
@@ -45,5 +45,10 @@ class CsvWriter(
 }
 
 fun main() {
-    CsvWriter(CosFun(), -3.0, 3.0, 0.01).writeToFile("cos-values.csv")
+    CsvWriter(CosFun(), -4.0, 4.0, 0.1).writeToFile("cos-values.csv")
+    CsvWriter(LnFun(), 0.01, 4.0, 0.1).writeToFile("ln-values.csv")
+    CsvWriter(TanFun(), -4.0, 4.0, 0.1).writeToFile("tan-values.csv")
+    CsvWriter(CotFun(), -4.0, 4.0, 0.1).writeToFile("cot-values.csv")
+    CsvWriter(LogFun(base = 3), 0.01, 4.0, 0.1).writeToFile("log3-values.csv")
+    CsvWriter(MySystemOfFunctions(), -4.0, 4.0, 0.1).writeToFile("system-values.csv")
 }
