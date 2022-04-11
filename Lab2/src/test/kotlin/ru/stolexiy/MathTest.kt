@@ -3,89 +3,170 @@ package ru.stolexiy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.test.assertEquals
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*;
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito
-import org.mockito.kotlin.mock
-import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
 import java.lang.Double.NaN
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.ln
+import kotlin.test.assertEquals
 
-@ExtendWith(MockitoExtension::class)
 internal class MathTest {
-
-    private fun sec(x: Number) = SecFun().calc(x)
-
-    private val baseFunMock: CosFun = mock {
-        on { calc(Mockito.anyInt()) } doAnswer { invocation ->
-            Math.cos(invocation.getArgument(0))
+    private val cosMock: CosFun = mock {
+        on { calc(Mockito.anyDouble()) } doAnswer { invocation ->
+            cos(invocation.getArgument(0))
         }
     }
 
+    private val lnMock: LnFun = mock {
+        on { calc(Mockito.anyDouble()) } doAnswer { invocation ->
+            ln(invocation.getArgument(0))
+        }
+    }
+
+    private val tan = TanFun(cosMock)
+    private val cot = CotFun(cosMock)
+    private val sin = SinFun(cosMock)
+    private val log10 = LogFun(base = 10, baseFun = lnMock)
+    private val log3 = LogFun(base = 3, baseFun = lnMock)
+
     @ParameterizedTest
-    @CsvFileSource(resources = ["/sec-tests.csv"], delimiter = ';')
-    fun `sec(x) test`(x: Double, result: Double) {
-        assertEquals(result, sec(x), absoluteTolerance)
+    @CsvFileSource(resources = ["/tan-tests.csv"], delimiter = ';')
+    fun `tan(x) test`(x: Double, expected: Double) {
+        assertEquals(expected, tan.calc(x), absoluteTolerance)
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = ["/sec-tests.csv"], delimiter = ';')
-    fun `sec(x) periodic test`(x: Double, result: Double) {
+    @CsvFileSource(resources = ["/tan-tests.csv"], delimiter = ';')
+    fun `tan(x) periodic test`(x: Double, expected: Double) {
         val period = 2 * PI
-        assertEquals(result, sec(x + period), absoluteTolerance)
-        assertEquals(result, sec(x - period), absoluteTolerance)
+        assertEquals(expected, tan.calc(x + period), absoluteTolerance)
+        assertEquals(expected, tan.calc(x - period), absoluteTolerance)
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = ["/sec-tests.csv"], delimiter = ';')
-    fun `sec(x) parity test`(x: Double, result: Double) {
-        assertEquals(sec(x), sec(-x), absoluteTolerance)
+    @CsvFileSource(resources = ["/tan-tests.csv"], delimiter = ';')
+    fun `tan(x) odd test`(x: Double, expected: Double) {
+        assertEquals(tan.calc(x), -tan.calc(-x), absoluteTolerance)
     }
 
     @Test
-    fun `sec(x) breakpoints test`() {
-        assertThat(abs(sec(Math.PI / 2)), greaterThan(1E14))
-        assertThat(abs(sec(- 3 * Math.PI / 2)), greaterThan(1E14))
+    fun `tan(x) NaN argument test`() {
+        assertEquals(NaN, tan.calc(NaN))
     }
 
     @Test
-    fun `sec(x) NaN argument test`() {
-        assertEquals(sec(NaN), NaN)
+    fun `tan(x) infinity argument test`() {
+        assertEquals(NaN, tan.calc(Double.POSITIVE_INFINITY))
+        assertEquals(NaN, tan.calc(Double.NEGATIVE_INFINITY))
     }
-
-    @Test
-    fun `sec(x) infinity argument test`() {
-        assertEquals(sec(Double.POSITIVE_INFINITY), NaN)
-        assertEquals(sec(Double.NEGATIVE_INFINITY), NaN)
-    }
-
-
-    @Test
-    fun `simple tan test`() {
-        val expected = abs(Math.tan(PI / 3))
-        val actual = abs(TanFun().calc(PI / 3))
-        assertEquals(expected, actual, absoluteTolerance)
-    }
-
-    /*@ParameterizedTest
-    @ValueSource(classes = [SinFun::class, TanFun::class])
-    fun <T: TrigonometricFun> `simple sin test`(testFunClass: Class<T>) {
-        val testFun = testFunClass.constructors[1].newInstance(baseFun) as SingleArgMathFun
-        val expected = abs(Math.sin(PI / 3))
-        val actual = abs(testFun.calc(PI / 3))
-        assertEquals(expected, actual, absoluteTolerance)
-    }*/
 
     @ParameterizedTest
-    @ValueSource(doubles = [1.0, 2.3, PI / 2])
-    fun `simple sin test`(x: Number) {
-        val expected = abs(Math.sin(x.toDouble()))
-        val actual = abs(SinFun(baseFunMock).calc(x))
-        assertEquals(expected, actual, absoluteTolerance)
+    @CsvFileSource(resources = ["/cot-tests.csv"], delimiter = ';')
+    fun `cot(x) test`(x: Double, expected: Double) {
+        assertEquals(expected, cot.calc(x), absoluteTolerance)
     }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/cot-tests.csv"], delimiter = ';')
+    fun `cot(x) periodic test`(x: Double, expected: Double) {
+        val period = 2 * PI
+        assertEquals(expected, cot.calc(x + period), absoluteTolerance)
+        assertEquals(expected, cot.calc(x - period), absoluteTolerance)
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/cot-tests.csv"], delimiter = ';')
+    fun `cot(x) odd test`(x: Double, expected: Double) {
+        assertEquals(cot.calc(x), -cot.calc(-x), absoluteTolerance)
+    }
+
+    @Test
+    fun `cot(x) NaN argument test`() {
+        assertEquals(NaN, cot.calc(NaN))
+    }
+
+    @Test
+    fun `cot(x) infinity argument test`() {
+        assertEquals(NaN, cot.calc(Double.POSITIVE_INFINITY))
+        assertEquals(NaN, cot.calc(Double.NEGATIVE_INFINITY))
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/sin-tests.csv"], delimiter = ';')
+    fun `sin(x) test`(x: Double, expected: Double) {
+        assertEquals(expected, sin.calc(x), absoluteTolerance)
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/sin-tests.csv"], delimiter = ';')
+    fun `sin(x) periodic test`(x: Double, expected: Double) {
+        val period = 2 * PI
+        assertEquals(expected, sin.calc(x + period), absoluteTolerance)
+        assertEquals(expected, sin.calc(x - period), absoluteTolerance)
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/sin-tests.csv"], delimiter = ';')
+    fun `sin(x) odd test`(x: Double, expected: Double) {
+        assertEquals(sin.calc(x), -sin.calc(-x), absoluteTolerance)
+    }
+
+    @Test
+    fun `sin(x) NaN argument test`() {
+        assertEquals(NaN, sin.calc(NaN))
+    }
+
+    @Test
+    fun `sin(x) infinity argument test`() {
+        assertEquals(NaN, sin.calc(Double.POSITIVE_INFINITY))
+        assertEquals(NaN, sin.calc(Double.NEGATIVE_INFINITY))
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/log10-tests.csv"], delimiter = ';')
+    fun `log10(x) test`(x: Double, expected: Double) {
+        assertEquals(expected, log10.calc(x), absoluteTolerance)
+    }
+
+    @Test
+    fun `log10(x) NaN argument test`() {
+        assertEquals(NaN, log10.calc(NaN))
+    }
+
+    @Test
+    fun `log10(x) infinity argument test`() {
+        assertEquals(Double.POSITIVE_INFINITY, log10.calc(Double.POSITIVE_INFINITY))
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = [-1e-200, -1.0, -10.0, -23.0, Double.NEGATIVE_INFINITY])
+    fun `log10(x) out of range test`(x: Double) {
+        assertEquals(NaN, log10.calc(x))
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/log3-tests.csv"], delimiter = ';')
+    fun `log3(x) test`(x: Double, expected: Double) {
+        assertEquals(expected, log3.calc(x), absoluteTolerance)
+    }
+
+    @Test
+    fun `log3(x) NaN argument test`() {
+        assertEquals(NaN, log3.calc(NaN))
+    }
+
+    @Test
+    fun `log3(x) infinity argument test`() {
+        assertEquals(Double.POSITIVE_INFINITY, log3.calc(Double.POSITIVE_INFINITY))
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = [-1e-200, -1.0, -10.0, -23.0, Double.NEGATIVE_INFINITY])
+    fun `log3(x) out of range test`(x: Double) {
+        assertEquals(NaN, log3.calc(x))
+    }
+
 }

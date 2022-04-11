@@ -1,83 +1,58 @@
 package ru.stolexiy
 
 import kotlin.math.PI
-import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.sign
 import kotlin.math.sqrt
-
-internal const val absoluteTolerance = 1e-7
-
-interface SingleArgMathFun {
-    fun calc(x: Number): Double
-}
-
-open class CosFun: SingleArgMathFun {
-    override fun calc(x: Number): Double {
-        /*var _x = x.toDouble()
-        if (abs(_x) > PI) {
-            var mult = (_x / PI).toInt()
-            mult += mult % 2
-            _x -= PI * mult
-        }
-        return generateSequence(0) { it + 1 }
-            .take(10)
-            .map { k ->
-                (-1.0).pow(k) * _x.pow(2 * k) / factorial(2 * k)
-            }
-            .sum()*/
-        return 0.0
-    }
-}
 
 abstract class TrigonometricFun(
     protected val baseFun: CosFun = CosFun()
 ): SingleArgMathFun
 
-class SecFun(
+open class CotFun(
     baseFun: CosFun = CosFun()
 ): TrigonometricFun(baseFun) {
-    override fun calc(x: Number) = 1 / baseFun.calc(x)
+    private val sin = SinFun(baseFun)
+    override fun calc(x: Number) = baseFun.calc(x) / sin.calc(x)
 }
 
-//fun cot(x: Number) = cos(x) / sin(x)
-class CotFun(
+open class TanFun(
     baseFun: CosFun = CosFun()
 ): TrigonometricFun(baseFun) {
-    override fun calc(x: Number) = baseFun.calc(x) / sin(x)
-
-    private fun sin(x: Number) = sqrt(1 - baseFun.calc(x).pow(2))
+    private val sin = SinFun(baseFun)
+    override fun calc(x: Number) = sin.calc(x) / baseFun.calc(x)
 }
 
-//fun tan(x: Number) = sin(x) / cos(x)
-class TanFun(
+open class SinFun(
     baseFun: CosFun = CosFun()
 ): TrigonometricFun(baseFun) {
-    override fun calc(x: Number) = sin(x) / baseFun.calc(x)
-
-    private fun sin(x: Number) = sqrt(1 - baseFun.calc(x).pow(2))
+    override fun calc(x: Number): Double {
+        val _x = normalizeRadians(x)
+        return sign(_x) * sqrt(1.0 - baseFun.calc(_x).pow(2))
+    }
 }
 
-//fun sin(x: Number) = cos(PI / 2 - x.toDouble())
-class SinFun(
-    baseFun: CosFun = CosFun()
-): TrigonometricFun(baseFun) {
-    override fun calc(x: Number) = sqrt(1 - baseFun.calc(x).pow(2))
+abstract class LogarithmicFun(
+    protected val baseFun: LnFun = LnFun()
+): SingleArgMathFun
+
+//fun log(base: Int, x: Number) = ln(x) / ln(base)
+open class LogFun(
+    val base: Number = 10.0,
+    baseFun: LnFun = LnFun()
+): LogarithmicFun(baseFun) {
+    init {
+        if (base.toDouble() <= 0 || base.toDouble() == 1.0)
+            throw IllegalArgumentException()
+    }
+
+    override fun calc(x: Number): Double {
+        val _x = x.toDouble()
+        if (_x < 0)
+            return Double.NaN
+        return baseFun.calc(_x) / baseFun.calc(base.toDouble())
+    }
 }
 
-fun ln(x: Number): Double {
-    return 0.0
-}
-open class LnFunc: SingleArgMathFun {
-
-}
-
-fun log(a: Number, x: Number): Double {
-    return 0.0
-}
-
-private fun factorial(x: Int): Long =
-    (1..x).fold(1L) { acc, i -> acc * i.toLong() }
-
-fun main() {
-
-}
+internal fun factorial(x: Int): Double =
+    (1..x).fold(1.0) { acc, i -> acc * i.toLong() }
