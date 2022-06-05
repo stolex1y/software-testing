@@ -15,8 +15,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
-    testImplementation("org.seleniumhq.selenium:selenium-java:3.X")
-    testImplementation("org.seleniumhq.selenium:selenium-api:3.141.59")
+    testImplementation("org.seleniumhq.selenium:selenium-java:3.141.59")
+//    testImplementation("org.seleniumhq.selenium:selenium-api:3.141.59")
     testImplementation("ru.yandex.qatools.htmlelements:htmlelements-java:1.20.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.hamcrest:hamcrest-all:1.3")
