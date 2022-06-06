@@ -6,6 +6,4 @@
 # Build and gradle
 **/build/
 **/.gradle/
-**/out/test*/
-
-!**/out/test-result/
+**/out/
